@@ -1,23 +1,20 @@
 function fetchData(url, callback) {
     fetch(url)
         .then(response => response.json())
-        .then(data => callback(null, data))
-        .catch(err => callback(err, null));
+        .then(data => callback(data));
 }
 
 function getPostsCallback(callback) {
-    fetchData('https://jsonplaceholder.typicode.com/posts', (err, data) => {
-        if (err) return callback(err);
-        const sorted = data.sort((a, b) => b.title.length - a.title.length);
-        callback(null, sorted);
+    fetchData('https://jsonplaceholder.typicode.com/posts', (data) => {
+        const sorted = data.sort((a, b) => a.title.length - b.title.length);
+        callback(sorted);
     });
 }
 
 function getCommentsCallback(callback) {
-    fetchData('https://jsonplaceholder.typicode.com/comments', (err, data) => {
-        if (err) return callback(err);
-        const sorted = data.sort((a, b) => a.email.localeCompare(b.email));
-        callback(null, sorted);
+    fetchData('https://jsonplaceholder.typicode.com/comments', (data) => {
+        const sorted = data.sort((a, b) => a.email > b.email ? 1 : -1);
+        callback(sorted);
     });
 }
 
@@ -40,20 +37,20 @@ function getUncompletedTodos() {
 }
 
 async function getPostsAsync() {
-    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-    const data = await response.json();
-    return data.sort((a, b) => b.title.length - a.title.length);
+    const res = await fetch('https://jsonplaceholder.typicode.com/posts');
+    const data = await res.json();
+    return data.sort((a, b) => a.title.length - b.title.length);
 }
 
 async function getCommentsAsync() {
-    const response = await fetch('https://jsonplaceholder.typicode.com/comments');
-    const data = await response.json();
-    return data.sort((a, b) => a.email.localeCompare(b.email));
+    const res = await fetch('https://jsonplaceholder.typicode.com/comments');
+    const data = await res.json();
+    return data.sort((a, b) => a.email > b.email ? 1 : -1);
 }
 
 async function getUsersAsync() {
-    const response = await fetch('https://jsonplaceholder.typicode.com/users');
-    const data = await response.json();
+    const res = await fetch('https://jsonplaceholder.typicode.com/users');
+    const data = await res.json();
     return data.map(user => ({
         id: user.id,
         name: user.name,
@@ -64,8 +61,8 @@ async function getUsersAsync() {
 }
 
 async function getUncompletedTodosAsync() {
-    const response = await fetch('https://jsonplaceholder.typicode.com/todos');
-    const data = await response.json();
+    const res = await fetch('https://jsonplaceholder.typicode.com/todos');
+    const data = await res.json();
     return data.filter(todo => !todo.completed);
 }
 
